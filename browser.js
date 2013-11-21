@@ -1,4 +1,4 @@
-var http = require('http');
+var hyperquest = require('hyperquest');
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var url = require('url');
@@ -51,14 +51,9 @@ Persona.prototype._watch = function (user) {
 Persona.prototype._login = function (assertion) {
     var self = this;
     var uri = self.routes.login;
-    
-    var u = typeof uri === 'object' ? uri : url.parse(uri);
-    var req = http.request({
-        method: 'POST',
-        host: u.hostname || window.location.hostname,
-        port: u.port || window.location.port,
-        path: u.path
-    });
+
+    if (typeof uri == 'object') uri = url.format(uri);
+    var req = hyperquest.post(uri);
     req.on('response', function (res) {
         var body = '';
         res.on('data', function (buf) { body += buf });
@@ -102,14 +97,9 @@ Persona.prototype._logout = function () {
     var self = this;
     var uri = self.routes.logout;
     self.id = null;
-    
-    var u = typeof uri === 'object' ? uri : url.parse(uri);
-    var req = http.request({
-        method: 'POST',
-        host: u.hostname || window.location.hostname,
-        port: u.port || window.location.port,
-        path: u.path
-    });
+
+    if (typeof uri == 'object') uri = url.format(uri);
+    var req = hyperquest.post(uri);
     req.on('response', function (res) {
         if (!/^2\d\d\b/.test(res.statusCode)) {
             var body = '';
