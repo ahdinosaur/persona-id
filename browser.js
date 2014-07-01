@@ -20,6 +20,8 @@ function Persona (opts) {
     }
     if (opts.login) self.routes.login = opts.login;
     if (opts.logout) self.routes.logout = opts.logout;
+
+    if (opts.contentType) self.contentType = opts.contentType;
 }
 inherits(Persona, EventEmitter);
 
@@ -56,7 +58,7 @@ Persona.prototype._login = function (assertion) {
     var body = JSON.stringify({ assertion: assertion });
     var req = hyperquest.post(uri, {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': self.contentType,
         'Content-Length': body.length,
       },
     });
