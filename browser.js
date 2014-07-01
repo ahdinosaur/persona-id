@@ -22,6 +22,7 @@ function Persona (opts) {
     if (opts.logout) self.routes.logout = opts.logout;
 
     if (opts.contentType) self.contentType = opts.contentType;
+    if (opts.key) self.key = opts.key;
 }
 inherits(Persona, EventEmitter);
 
@@ -91,9 +92,9 @@ Persona.prototype._login = function (assertion) {
                             key + '=' + m.cookie[key] + '; path=/';
                     }
                 }
-                if (m && m.id) {
-                    self.id = m.id;
-                    self.emit('login', m.id);
+                if (m && m[self.key]) {
+                    self.id = m[self.key];
+                    self.emit('login', m[self.key]);
                 }
             });
         }
