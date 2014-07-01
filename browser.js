@@ -53,7 +53,13 @@ Persona.prototype._login = function (assertion) {
     var uri = self.routes.login;
 
     if (typeof uri == 'object') uri = url.format(uri);
-    var req = hyperquest.post(uri);
+    var body = JSON.stringify({ assertion: assertion });
+    var req = hyperquest.post(uri, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': body.length,
+      },
+    });
     req.on('response', function (res) {
         var body = '';
         res.on('data', function (buf) { body += buf });
@@ -90,7 +96,7 @@ Persona.prototype._login = function (assertion) {
             });
         }
     });
-    req.end(JSON.stringify({ assertion: assertion }));
+    req.end(body);
 };
 
 Persona.prototype._logout = function () {
